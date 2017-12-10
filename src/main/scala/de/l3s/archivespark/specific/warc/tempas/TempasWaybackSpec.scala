@@ -3,8 +3,9 @@ package de.l3s.archivespark.specific.warc.tempas
 import java.net.URLEncoder
 
 import de.l3s.archivespark.dataspecs.DataSpec
+import de.l3s.archivespark.utils.RddUtil
 import org.apache.http.client.methods.HttpGet
-import org.apache.http.impl.client.HttpClients
+import org.apache.http.impl.client.SystemDefaultHttpClient
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
@@ -22,9 +23,9 @@ class TempasWaybackSpec private (query: String, from: Option[Int] = None, to: Op
   }
 
   override def load(sc: SparkContext, minPartitions: Int): RDD[TempasYearResult] = {
-    sc.parallelize(1 to pages, minPartitions).flatMap { page =>
-      @transient val client = HttpClients.createDefault
-      @transient val get = new HttpGet(searchUrl(page))
+    RddUtil.parallelize(sc, 1 to pages, minPartitions).flatMap{ page =>
+      val client = new SystemDefaultHttpClient()
+      val get = new HttpGet(searchUrl(page))
       get.setHeader("Accept", AcceptType)
       val in = client.execute(get).getEntity.getContent
       try {
