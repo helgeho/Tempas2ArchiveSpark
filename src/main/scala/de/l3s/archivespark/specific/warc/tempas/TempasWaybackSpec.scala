@@ -35,7 +35,7 @@ class TempasWaybackSpec private (query: String, from: Option[Int] = None, to: Op
       } finally {
         in.close()
       }
-    }
+    }.cache
   }
 
   override def parse(result: TempasYearResult): Option[TempasWaybackRecord] = {
