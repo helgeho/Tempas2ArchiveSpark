@@ -35,7 +35,7 @@ class TempasWaybackSpec private (query: String, from: Option[Int] = None, to: Op
       } finally {
         in.close()
       }
-    }.repartition(minPartitions)
+    }
   }
 
   override def parse(result: TempasYearResult): Option[TempasWaybackRecord] = {
